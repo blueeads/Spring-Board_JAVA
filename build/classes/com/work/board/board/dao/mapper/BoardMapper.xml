@@ -4,6 +4,16 @@
 
 <mapper namespace="com.work.board.board.dao.IBoardRepository">
 
+	<select id="getBoardListCnt" parameterType="int" resultType="int">
+	<![CDATA[
+	SELECT COUNT(BOARD_ID) AS "boardId" 
+		FROM(
+		SELECT * FROM BOARD
+			WHERE CATEGORY_ID=#{categoryId}
+			)
+	]]>
+	</select>
+
 	<select id="selectArticleListByCategory" parameterType="map" resultType="com.work.board.board.model.Board">
 	<![CDATA[
 		SELECT 
@@ -13,11 +23,8 @@
 			EMAIL					AS "email", 
 			TITLE					AS "title", 
 			WRITE_DATE				AS "writeDate", 
-			MASTER_ID 				AS "masterId", 
-			REPLY_NUMBER 			AS "replyNumber", 
-			REPLY_STEP				AS "replyStep", 
 			READ_COUNT				AS "readCount", 
-			RNUM+1					AS "seq"
+			RNUM					AS "seq"
 	    FROM (
 	    	SELECT 
 	    		BOARD_ID, 
@@ -26,15 +33,12 @@
 	    		EMAIL, 
 	    		TITLE, 
 	    		WRITE_DATE, 
-	    		MASTER_ID, 
-	    		REPLY_NUMBER, 
-	    		REPLY_STEP, 
 	    		READ_COUNT, 
 	    		ROWNUM AS RNUM
 	    	FROM (
 	    		SELECT * FROM BOARD
 	    		WHERE CATEGORY_ID=#{categoryId}
-	    		ORDER BY MASTER_ID DESC
+	    		ORDER BY BOARD_ID DESC
 	    	)
 	    )
 	    WHERE RNUM BETWEEN #{start} AND #{end}
@@ -52,9 +56,6 @@
 			CONTENT						AS "content", 
 			READ_COUNT					AS "readCount", 
 			WRITE_DATE					AS "writeDate", 
-			MASTER_ID					AS "masterId", 
-			REPLY_NUMBER				AS "replyNumber", 
-			REPLY_STEP					AS "replyStep", 
 			BOARD_UPLOAD_FILE.FILE_ID			AS "fileId", 
 			BOARD_UPLOAD_FILE.FILE_NAME			AS "fileName", 
 			BOARD_UPLOAD_FILE.FILE_SIZE			AS "fileSize",
@@ -93,9 +94,9 @@
 	<![CDATA[
 		INSERT INTO 
 		BOARD 
-			(BOARD_ID, CATEGORY_ID, WRITER, EMAIL, PASSWORD, TITLE, CONTENT, WRITE_DATE, MASTER_ID, REPLY_NUMBER, REPLY_STEP)  
+			(BOARD_ID, CATEGORY_ID, WRITER, EMAIL, TITLE, CONTENT, WRITE_DATE)  
 		VALUES 
-			(#{boardId}, #{categoryId}, #{writer}, #{email}, #{password}, #{title}, #{content}, SYSDATE, #{boardId}, 0, 0)
+			(#{boardId}, #{categoryId}, #{writer}, #{email}, #{title}, #{content}, SYSDATE)
 	]]>
 	</insert>
 	
@@ -120,35 +121,6 @@
 			FILE_DATA 			AS "fileData"
 		FROM BOARD_UPLOAD_FILE 
 		WHERE FILE_ID=#{fileId}
-	]]>
-	</select>
-
-	<insert id="updateReplyNumber" parameterType="map">
-	<![CDATA[
-		UPDATE 
-			BOARD 
-		SET 
-			REPLY_NUMBER = REPLY_NUMBER + 1 
-		WHERE 
-			MASTER_ID = #{masterId} AND REPLY_NUMBER > #{replyNumber}
-	]]>
-	</insert>
-
-	<insert id="replyArticle" parameterType="com.work.board.board.model.Board">
-	<![CDATA[
-		INSERT INTO 
-		BOARD 
-			(BOARD_ID, CATEGORY_ID, WRITER, EMAIL, PASSWORD, TITLE, CONTENT, WRITE_DATE, MASTER_ID, REPLY_NUMBER, REPLY_STEP)  
-		VALUES 
-			(#{boardId}, #{categoryId}, #{writer}, #{email}, #{password}, #{title}, #{content}, SYSDATE, #{masterId}, #{replyNumber}, #{replyStep})
-	]]>
-	</insert>
-		
-	<select id="getPassword" parameterType="int" resultType="string">
-	<![CDATA[
-		SELECT PASSWORD 
-		FROM BOARD 
-		WHERE BOARD_ID=#{boardId}
 	]]>
 	</select>
 	
@@ -177,14 +149,9 @@
 	
 	<select id="selectDeleteArticle" parameterType="int" resultType="com.work.board.board.model.Board">
 	<![CDATA[
-		SELECT 
-			CATEGORY_ID		AS "categoryId", 
-			MASTER_ID		AS "masterId", 
-			REPLY_NUMBER	AS "replyNumber"
-		FROM
-			BOARD
+		SELECT * FROM BOARD
 		WHERE 
-			BOARD_ID = #{boardId}
+			BOARD_ID=#{boardId}
 	]]>
 	</select>
 	
@@ -192,30 +159,16 @@
 	<![CDATA[
 		DELETE FROM BOARD_UPLOAD_FILE 
 		WHERE EXISTS  ( SELECT BOARD_ID FROM BOARD 
-						WHERE BOARD.MASTER_ID=#{boardId} AND BOARD.BOARD_ID = BOARD_UPLOAD_FILE.BOARD_ID )
-	]]>
-	</delete>
-
-	<delete id="deleteReplyFileData" parameterType="int">
-	<![CDATA[
-		DELETE FROM BOARD_UPLOAD_FILE 
-		WHERE EXISTS  ( SELECT BOARD_ID FROM BOARD 
 						WHERE BOARD.BOARD_ID=#{boardId} AND BOARD.BOARD_ID = BOARD_UPLOAD_FILE.BOARD_ID )
 	]]>
 	</delete>
 
-	<delete id="deleteArticleByBoardId" parameterType="map">
-		DELETE FROM 
-			BOARD 
-		WHERE 
-			BOARD_ID=#{boardId}
-	</delete>
-
-	<delete id="deleteArticleByMasterId" parameterType="map">
-		DELETE FROM 
-			BOARD 
-		WHERE 
-			MASTER_ID=#{boardId}
+	<delete id="deleteArticleByBoardId" parameterType="int">
+	<![CDATA[
+		DELETE
+			FROM BOARD
+		WHERE BOARD_ID=#{boardId}
+	]]>
 	</delete>
 	
 	<select id="selectTotalArticleCount" resultType="int">
@@ -227,8 +180,8 @@
 	
 	<select id="selectTotalArticleCountByCategoryId" parameterType="int" resultType="int">
 	<![CDATA[
-		SELECT COUNT(BOARD_ID) AS "count"
-		FROM BOARD 
+		SELECT 
+		COUNT(*) FROM BOARD 
 		WHERE CATEGORY_ID=#{categoryId}	
 	]]>
 	</select>
@@ -251,11 +204,8 @@
 			EMAIL					AS "email", 
 			TITLE					AS "title", 
 			WRITE_DATE				AS "writeDate", 
-			MASTER_ID 				AS "masterId", 
-			REPLY_NUMBER 			AS "replyNumber", 
-			REPLY_STEP				AS "replyStep", 
 			READ_COUNT				AS "readCount", 
-			RNUM+1 					AS "seq"
+			RNUM					AS "seq"
 	    FROM (
 	    	SELECT 
 	    		BOARD_ID, 
@@ -264,9 +214,6 @@
 	    		EMAIL, 
 	    		TITLE, 
 	    		WRITE_DATE, 
-	    		MASTER_ID, 
-	    		REPLY_NUMBER, 
-	    		REPLY_STEP, 
 	    		READ_COUNT, 
 	    		ROWNUM AS RNUM
 	    	FROM (
@@ -275,7 +222,7 @@
 	    			TITLE LIKE #{keyword}
 		    		OR 
 		    		CONTENT LIKE #{keyword}
-	    		ORDER BY MASTER_ID DESC, REPLY_NUMBER, REPLY_STEP
+	    		ORDER BY BOARD_ID DESC
 	    	)
 	    )
 	    WHERE RNUM BETWEEN #{start} AND #{end}

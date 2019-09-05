@@ -6,7 +6,7 @@ import com.work.board.board.model.Board;
 import com.work.board.board.model.BoardUploadFile;
 
 public interface IBoardService {
-	int getBoardListCnt(int categoryId) throws Exception;
+	int getBoardListCnt(int categoryId);
 	
 	void insertArticle(Board boardId);
 	void insertArticle(Board boardId, BoardUploadFile file);
@@ -17,7 +17,6 @@ public interface IBoardService {
 	Board selectArticle(int boardId);
 	
 	BoardUploadFile getFile(int fileId);
-	String getPassword(int boardId);
 	
 	void updateArticle(Board board);
 	void updateArticle(Board board, BoardUploadFile file);

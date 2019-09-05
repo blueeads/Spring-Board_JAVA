@@ -74,9 +74,6 @@
     <div class="form-group">
     	<div class="col-sm-offset-2 col-sm-8">
 			<input type="hidden" name="boardId" value="${board.boardId}">
-			<input type="hidden" name="masterId" value="${board.masterId}">
-			<input type="hidden" name="replyNumber" value="${board.replyNumber}">
-			<input type="hidden" name="replyStep" value="${board.replyStep}">
 			<input type="submit" id="i_submit" class="btn btn-info" value="<fmt:message key="SAVE"/>"> <input type="reset" class="btn btn-info" value="<fmt:message key="CANCEL"/>">
 		</div>
 	</div>

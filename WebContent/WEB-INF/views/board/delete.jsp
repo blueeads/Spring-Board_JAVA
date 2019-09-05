@@ -26,7 +26,6 @@
 		<form action='<c:url value="/board/delete"/>' class="form-inline" method="post">
 		<input type="hidden" name="name" value="${sessionscope.userid}">
 		<input type="hidden" name="boardId" value="${boardId}">
-		<input type="hidden" name="replyNumber" value="${replyNumber}">
 		<input type="hidden" name="categoryId" value="${categoryId}">
 		<div class="form-group">
 		<div class="col-sm-8">
@@ -38,9 +37,6 @@
 		</div>
 		</form>
 		<div class="form-group pc"><div class="col-sm-10">
-		<!-- <c:if test="${ !empty sessionScope.userid}">
-		로그인 사용자는 아무 비밀번호나 입력해도 글이 삭제됩니다.
-		</c:if> !-->
 		</div></div>
 	</div>
 </div>

@@ -79,15 +79,15 @@
 							</button></a> <a href='<c:url value="/board/update/${board.boardId}"/>'><button
 								type="button" class="btn btn-info">
 								<fmt:message key="UPDATE" />
-							</button></a> <a href='<c:url value="/board/delete/${board.boardId}"/>'><button
+							</button></a> <button
 								type="button" class="btn btn-info" id = "boardDelete">
 								<fmt:message key="DELETE" />
-							</button></a></td>
+							</button></td>
 				</tr>
 			</table>
 
 			<label for="content">comment</label>
-			<form action="<c:url value='/board/view'/>" method="post"
+			<form action="<c:url value='/reply/view'/>" method="post"
 				name="commentInsertForm" id="commentInsertForm"
 				enctype="multipart/	form-data" class="form-horizontal">
 				<div class="input-group">
@@ -141,26 +141,26 @@
 		});
 		
 		//댓글 수정 - 댓글 내용 출력을 input 폼으로 변경 
-		function commentUpdate(cno, contnet) {
-				var a = '';
-				a += '<div class="input-group">';
-				a += '<input id="replycontent" type="text" class="form-control" name="content_'+cno+'" value="'+contnet+'"/>';
-				a += '<span class="input-group-btn"><button id="updataProc" class="btn btn-default" type="button" onclick="commentUpdateProc('
-						+ cno + contnet + ');">수정</button> </span>';
-				a += '</div>';
-				$('#UpdateContent'+cno).html(a);
+		function commentUpdate(cno) {
+			var content = document.getElementById('UpdateContent'+cno).innerHTML;
+			var a = '';
+			a += '<div class="input-group">';
+			a += '<input id="replycontent'+cno+'" type="text" class="form-control" name="content_'+cno+'" value="'+content+'"/>';
+			a += '<span class="input-group-btn"><button id="updataProc" class="btn btn-default" type="button" onclick="commentUpdateProc('+cno+');">수정</button> </span>';
+			a += '</div>';
+			$('#UpdateContent'+cno).html(a);
 		}
 		
-		function commentUpdateProc(cno, content){
+		function commentUpdateProc(cno){
+			var content = document.getElementById('replycontent'+cno).value;
+			console.log(content);
 			$.ajax({
 					url: '/homework/reply/update',
 					type: 'POST',
-					data : {'cno': cno,
-						'content' : content
-						},
-					dataType : 'json',
+					data : {'cno': cno, 'content' : content, 'bno': ${board.boardId}},
+					dataType : 'text',
 					success: function(result) {
-						alert("댓글 수정완료");
+						alert("댓글 수정이 완료되었습니다.");
 						getList();
 					},
 					error: function(state, error) {
@@ -174,31 +174,33 @@
 
 		//댓글 삭제 
 		function commentDelete(cno) {
-			var boardId = document.getElementById('replyWriter'); 
-			var currentId = '${sessionScope.userid}';
-			if(boardId.innerHTML == currentId) {
+			var boardwriter = document.getElementById('replyWriter'+cno); 
+			var currenwriter = '${sessionScope.userid}';
+			if(boardwriter.innerHTML == currenwriter) {
 			$.ajax({
 				url : '/homework/reply/delete/'+cno,
-				type : 'post',
-				data: {'cno': cno,
-						'bno': ${board.boardId}	
-				},
-				dataType : 'json',
+				type : 'html',
+				data: {'cno': cno, bno: ${board.boardId}},
+				dataType : 'html',
 				success : function() {
-					console.log("success");
-				},
-				complete: function(){
 					getList();
 					alert("성공적으로 댓글을 삭제하였습니다.");
 				}
 			});
-			}else if(currentId == "") {
+			}else if(currenwriter == "") {
 				alert("로그인이 되어있지 않습니다.");
 				location.href="/homework/member/login";
-			}else if(boardId != currentId){
+			}else if(boardwriter != currenwriter){
 				alert("권한이 없습니다.");
 			}
-			console.log(currentId);
+			console.log(currenwriter);
+		}
+		
+		function getFormatData(date) {
+			var year = date.getFullYear();
+			var mon = date.getMonth()+1;
+			var day = date.getDate();
+			return year + "-" + mon + "-" + day;
 		}
 		
 		function getList(){
@@ -213,7 +215,7 @@
 	               	var htmls = "";
 				if(result.length < 1){
 					htmls += '<div>등록된 댓글이 없습니다.</div>';
-				} else {					
+				} else {			
 		                    htmls += '<table class="table table-bordered" style="margin-top: 15px">';
 		                    htmls += '<tbody id="">';
 		                    htmls += '<tr>';
@@ -224,18 +226,20 @@
 		                    htmls +='<td width="10%"><fmt:message key="BTN_CLICK" /></td>';
 		                    htmls += '</tr>';
 		                    $(result).each(function(){
-		                     htmls += '<tr style="margin-top: 5px">';
-		                     htmls += '<td width="4%">'+ this.seq +'</td>';
-		                     htmls += '<td width="10%" id="replyWriter">' + this.writer +'</td>';
-		                     htmls += '<td width="55%" id="UpdateContent'+this.cno+'">'+this.content+'</td>';
-		                     htmls += '<td width="10%">';
-		                     htmls += '<td width="10%">';
-		                     htmls += '<input type="hidden" value="'+this.cno+'" id="replycno">';
-		                     htmls += '<input type="hidden" value="'+this.content+'" id="replycontent">';
-		                     htmls += '<button type="button" id="commentUpdateBtn" name="update" onclick="commentUpdate('+this.cno+','+this.content+');">수정</button>';
-		                     htmls += '<button type="button" id="commentDeleteBtn" name="delete" onclick="commentDelete('+this.cno+');">삭제</button>';
-		                     htmls += '	</td>';
-		                     htmls += '	</tr>';
+			                  var date = new Date(this.reg_date);
+							var to = getFormatData(date);
+		                    htmls += '<tr style="margin-top: 5px">';
+		                    htmls += '<td width="4%">'+ this.seq +'</td>';
+		                    htmls += '<td width="10%" id="replyWriter'+this.cno+'">' + this.writer +'</td>';
+		                    htmls += '<td width="55%" id="UpdateContent'+this.cno+'">'+this.content+'</td>';
+		                    htmls += '<td width="10%">'+to+'</td>';
+		                    htmls += '<td width="10%">';
+		                    htmls += '<input type="hidden" value="'+this.cno+'" id="replycno">';
+		                    htmls += '<input type="hidden" value="'+content+'" id="replycontent">';
+		                    htmls += '<button type="button" id="commentUpdateBtn" name="update" onclick="commentUpdate('+this.cno+');">수정</button>';
+		                    htmls += '<button type="button" id="commentDeleteBtn" name="delete" onclick="commentDelete('+this.cno+');">삭제</button>';
+		                    htmls += '	</td>';
+		                    htmls += '	</tr>';
 		                });	//each end
 		                     htmls += '	</tbody>';
 		                     htmls += '	</table>';
@@ -251,6 +255,18 @@
 			
 			});
 		}
+		
+		$("#boardDelete").click(function(){
+			$.ajax({
+				url: '/homework/board/delete/',
+				type: 'POST',
+				dataType: 'json',
+				data: { 'boardId': ${board.boardId}},
+				success: function(){
+					console.log("ss");
+				}
+			});
+		});
 		
 		$(document).ready(function() {
 			getList();

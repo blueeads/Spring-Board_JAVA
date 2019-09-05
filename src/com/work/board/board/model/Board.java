@@ -9,14 +9,10 @@ public class Board {
 	private int categoryId;
 	private String writer;
 	private String email;
-	private String password;
 	private String title;
 	private String content;
 	private Timestamp writeDate;
-	private int masterId;
 	private int readCount;
-	private int replyNumber;
-	private int replyStep;
 	private int seq;
 	private int page;
 	private BoardCategory category;
@@ -51,12 +47,6 @@ public class Board {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
 	public String getTitle() {
 		return title;
 	}
@@ -75,29 +65,11 @@ public class Board {
 	public void setWriteDate(Timestamp writeDate) {
 		this.writeDate = writeDate;
 	}
-	public int getMasterId() {
-		return masterId;
-	}
-	public void setMasterId(int masterId) {
-		this.masterId = masterId;
-	}
 	public int getReadCount() {
 		return readCount;
 	}
 	public void setReadCount(int readCount) {
 		this.readCount = readCount;
-	}
-	public int getReplyNumber() {
-		return replyNumber;
-	}
-	public void setReplyNumber(int replyNumber) {
-		this.replyNumber = replyNumber;
-	}
-	public int getReplyStep() {
-		return replyStep;
-	}
-	public void setReplyStep(int replyStep) {
-		this.replyStep = replyStep;
 	}
 	public int getSeq() {
 		return seq;
@@ -153,9 +125,8 @@ public class Board {
 	@Override
 	public String toString() {
 		return "Board [boardId=" + boardId + ", categoryId=" + categoryId + ", writer=" + writer + ", email=" + email
-				+ ", password=" + password + ", title=" + title + ", writeDate=" + writeDate
-				+ ", masterId=" + masterId + ", readCount=" + readCount + ", replyNumber=" + replyNumber
-				+ ", replyStep=" + replyStep + ", seq=" + seq + ", category=" + category + ", fileId=" + fileId
+				+ ", title=" + title + ", writeDate=" + writeDate
+				+ ", readCount=" + readCount + ", seq=" + seq + ", category=" + category + ", fileId=" + fileId
 				+ ", fileName=" + fileName + ", fileSize=" + fileSize + ", fileContentType=" + fileContentType + "]";
 	}
 

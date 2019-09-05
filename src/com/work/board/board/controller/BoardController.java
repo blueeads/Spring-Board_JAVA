@@ -57,8 +57,8 @@ public class BoardController {
 	IBoardReplyService replyService;         
 	
 	@RequestMapping ("/board/cat/{categoryId}/{page}")                                                                            
-	//List 가져오기                                                                                                         
-	public String getListByCategory(@PathVariable int categoryId, @PathVariable int page, HttpSession session, Model model) {    
+	//List                            
+	public String getListByCategory(@PathVariable int categoryId, @PathVariable int page, HttpSession session, Model model) {
 		session.setAttribute("page", page);                                                                                      
 		model.addAttribute("categoryId", categoryId);                                                                            
 	                                                                                                                             
@@ -85,7 +85,6 @@ public class BoardController {
 	@ResponseBody
 	public String getList(@RequestParam(value="categoryId") int categoryId, @RequestParam(value="page") int page){
 		List<Board> List = boardService.selectArticleListByCategory(categoryId, page);
-		System.out.println("A" + List);
 		
 		String str = "";
 		ObjectMapper mapper = new ObjectMapper();
@@ -106,11 +105,7 @@ public class BoardController {
 		model.addAttribute("");
 		model.addAttribute("categoryId", board.getCategoryId());
 		
-		List<BoardReply> reply = replyService.commentList(boardId);
-		model.addAttribute("reply", reply);
-		
 		logger.info("getBoardDetails " + board.toString());
-		logger.info("get Reply" + reply.toString());
 		return "board/view";
 	}
 	
@@ -171,9 +166,7 @@ public class BoardController {
 	 @RequestMapping(value="/reply/getboardReply", method = {RequestMethod.GET,RequestMethod.POST})
 	 @ResponseBody
 	 public String getcommentList(@RequestParam("bno") int bno, HttpServletRequest request) throws Exception{
-		System.out.println("List");
 		List<BoardReply> List = replyService.commentList(bno);
-		System.out.println("A" + List);
 		
 		String str = "";
 		ObjectMapper mapper = new ObjectMapper();
@@ -186,8 +179,8 @@ public class BoardController {
 		return str;
 	 }
 	
-	 //Ok
-	 @RequestMapping(value="/reply/view", method = {RequestMethod.GET,RequestMethod.POST})
+	 //Comment Insert
+	 @RequestMapping(value="/reply/view", method = RequestMethod.POST)
 	 @ResponseBody
 	    public String CommentServiceInsert(@RequestParam int bno, @RequestParam String content, @RequestParam String writer, HttpServletRequest request) throws Exception{
 		 try {
@@ -199,10 +192,10 @@ public class BoardController {
 	     } catch (Exception e){
 	    	 e.printStackTrace();
 	     }
-	        return "redirect:/board/"+bno;
+	        return (String)request.getHeader("REFERER");
 	    }
 	    
-	    @RequestMapping(value="/reply/update", method = {RequestMethod.GET,RequestMethod.POST}) //
+	    @RequestMapping(value="/reply/update", method = {RequestMethod.GET,RequestMethod.POST})
 	    @ResponseBody
 	    private String CommentServiceUpdateProc(@RequestParam("cno") int cno, @RequestParam("content") String content, @RequestParam("bno")int bno, HttpServletRequest request) throws Exception{
 	        BoardReply reply = new BoardReply();
@@ -211,19 +204,6 @@ public class BoardController {
 	        replyService.ReplyUpdateService(reply);
 	        return "redirect:/board/"+bno;
 	    }
-	    
-	    //비동기할떄 쓸것
-	   //@RequestMapping(value="/reply/delete/{cno}", method = {RequestMethod.GET,RequestMethod.POST})
-	   //@ResponseBody
-	   //private String CommentServiceDelete(@RequestParam("cno") int cno, HttpServletRequest request) throws Exception{
-	   //	try {
-	   //		replyService.ReplyDeleteService(cno);	    		
-	   //	}
-	   //	catch(Exception e) {
-	   //		e.printStackTrace();
-	   //	}
-	   //    return (String)request.getHeader("REFERER");
-	   //}
 	    
 	    @RequestMapping(value="/reply/delete/{cno}", method = {RequestMethod.GET,RequestMethod.POST})
 	    @ResponseBody
@@ -273,45 +253,17 @@ public class BoardController {
 	@RequestMapping(value="/board/delete/{boardId}", method=RequestMethod.GET)
 	public String deleteArticle(@PathVariable int boardId, Model model) {
 		Board board = boardService.selectDeleteArticle(boardId);
+		System.out.println("SBoard : " + board);
 		model.addAttribute("categoryId", board.getCategoryId());
-		model.addAttribute("password", board.getPassword());
 		model.addAttribute("boardId", boardId);
+		System.out.println(board);
 		return "board/delete";
 	}
 	
-	@RequestMapping(value="/board/delete", method=RequestMethod.POST)
-	public String deleteArticle(Board board, BindingResult result, HttpSession session, Model model) {
-		try {
-			String dbpw = boardService.getPassword(board.getBoardId());
-			if(dbpw.equals(board.getPassword())) {
-				boardService.deleteArticle(board.getBoardId());
-				return "redirect:/board/cat/"+board.getCategoryId()+"/"+(Integer)session.getAttribute("page");
-			} else {
-				model.addAttribute("message", "Error");
-				return "error/runtime";
-			}
-		}catch(Exception e){
-			model.addAttribute("message", e.getMessage());
-			e.printStackTrace();
-			return "error/runtime";
-		}
-	}
-	
-	//@RequestMapping(value="/board/delete/{boardId}", method=RequestMethod.GET)
-	//public Board deleteArticle(@PathVariable int boardId, Model model) {
-	//	Board board = boardService.selectDeleteArticle(boardId);
-	//	model.addAttribute("categoryId", board.getCategoryId());
-	//	model.addAttribute("boardId", boardId);
-	//	return board;
-	//}
-	
-	//비밀번호 없이 삭제
-	//@RequestMapping(value="/board/delete{boardId}", method=RequestMethod.POST)
-	//@ResponseBody
-	//public String deleteArticle(@RequestParam("boardId") int boardId, @RequestParam("user") String user, BindingResult result, HttpSession session, Model model) {
+	//@RequestMapping(value="/board/delete", method=RequestMethod.POST)
+	//public String deleteArticle(Board board, BindingResult result, HttpSession session, Model model) {
 	//	try {
-	//		Board board = boardService.selectDeleteArticle(boardId);
-	//		if(user == board.getWriter()) {
+	//		if(session.getAttribute("userId") == board.getWriter()) {
 	//			boardService.deleteArticle(board.getBoardId());
 	//			return "redirect:/board/cat/"+board.getCategoryId()+"/"+(Integer)session.getAttribute("page");
 	//		} else {
@@ -324,6 +276,28 @@ public class BoardController {
 	//		return "error/runtime";
 	//	}
 	//}
+	
+	@RequestMapping(value="/board/delete", method= {RequestMethod.POST, RequestMethod.GET})
+	@ResponseBody
+	public String deleteArticle(@RequestParam("boardId") int boardId, BindingResult result, HttpSession session, Model model) {                                      
+		try {                                   
+			Board board = boardService.selectArticle(boardId);
+			if(session.getAttribute("userid") == board.getWriter()) {
+				System.out.println("SSSSSSS");
+				boardService.deleteArticle(board.getBoardId());                                                                               
+				return "redirect:/board/cat/"+board.getCategoryId()+"/"+(Integer)session.getAttribute("page");                                
+			} else {                                                                                                                          
+				model.addAttribute("message", "Error");
+				System.out.println("Error");
+				return "error/runtime";                                                                                                       
+			}                                                                                                                                 
+		}catch(Exception e){                                                                                                                  
+			model.addAttribute("message", e.getMessage());
+			System.out.println("Catch");
+			e.printStackTrace();                                                                                                              
+			return "error/runtime";                                                                                                           
+		}                                                                                                                                     
+	}                                                                                                                                       
 	
 	@RequestMapping("/board/search/{page}")                                                                                                          
 	public String search(@RequestParam("keyword")String keyword, @PathVariable int page, HttpSession session, Model model) {  

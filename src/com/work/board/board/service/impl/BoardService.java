@@ -19,12 +19,10 @@ public class BoardService implements IBoardService {
 	@Qualifier("IBoardRepository")
 	IBoardRepository boardRepository;
 
-	//�룯占� 野껊슣�뻻疫뀐옙 揶쏆뮇�땾 占쎌넇占쎌뵥
-
 	@Override
-		public int getBoardListCnt(int categoryId) throws Exception {
-			return boardRepository.getBoardListCnt();
-		}
+	public int getBoardListCnt(int categoryId){
+		return boardRepository.getBoardListCnt();
+	}
 	
 	@Transactional
 	public void insertArticle(Board board) {
@@ -34,8 +32,10 @@ public class BoardService implements IBoardService {
 	
 	@Transactional
 	public void insertArticle(Board board, BoardUploadFile file) {
+		//게시판 number +1해서 넣기
 		board.setBoardId(boardRepository.selectMaxArticleNo()+1);
 		boardRepository.insertArticle(board);
+		//파일이 있는지 & 파일 이름이 NULL이 아니면 파일 넣기
         if(file != null && file.getFileName() != null && !file.getFileName().equals("")) {
         	file.setBoardId(board.getBoardId());
         	file.setFileId(boardRepository.selectMaxFileId()+1);
@@ -66,11 +66,6 @@ public class BoardService implements IBoardService {
 	}
 
 	@Override
-	public String getPassword(int boardId) {
-		return boardRepository.getPassword(boardId);
-	}
-
-	@Override
 	public void updateArticle(Board board) {
 		boardRepository.updateArticle(board);
 	}
@@ -96,8 +91,9 @@ public class BoardService implements IBoardService {
 	
 	@Transactional
 	public void deleteArticle(int boardId) {
+		System.out.println("삭제");
 			boardRepository.deleteFileData(boardId);
-			boardRepository.deleteArticleByMasterId(boardId);
+			boardRepository.deleteArticleByBoardId(boardId);
 	}
 
 	@Override

@@ -74,39 +74,51 @@
 <jsp:include page="/WEB-INF/views/include/footer.jsp"/>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
+	function paging() {
+		
+	}
+
+	function getFormatData(date) {
+		var year = date.getFullYear();
+		var mon = date.getMonth()+1;
+		var day = date.getDate();
+		return year + "-" + mon + "-" + day;
+	}
+	
 	function List() {
 		var categoryId = 1;
 		var page = 1; //페이지 변수를 1로 초기화
-		var Paramdata = { 'categoryId' : ${categoryId},
-				'page' : page 
-				};
+		var Paramdata = { 'categoryId' : ${categoryId}, 'page' : page };
 		$.ajax({
-					url : '/homework//board/boardlist',
+					url : '/homework/board/boardlist',
 					type : 'POST',
 					dataType : "json",
 					data : Paramdata,
 					success : function(result) {
-						alert("success");
 						$("#boardList").val("");
 						var htmls = "";
 						$(result).each(function(){
-						htmls += '';
-						htmls += '';
+						var date = new Date(this.writeDate);
+						var to = getFormatData(date);
+						
+						htmls += '<tr>';
+						htmls += '<td>'+this.boardId+'</td>';
+						htmls += '<td class="pc">'+this.writer+'</td>';
+						htmls += '<td>'+this.title+'</td>';
+						htmls += '<td>'+to+'</td>';
+						htmls += '<td>'+this.readCount+'</td>';
+						htmls += '</tr>'
+						
+						
 						$("#boardList").html(htmls);
 						}
-					},
-					
-					error : function(request, status, error) {
-						console.log("code = " + request.status + " message = "
-								+ request.responseText + " error = "
-								+ error); // 실패 시 처리
+						)
 					},
 					complete : function(List) {
 						console.log(List);
 					}
 				});
 	}
-	
 	$(document).ready(function() {
 		List();
 	})

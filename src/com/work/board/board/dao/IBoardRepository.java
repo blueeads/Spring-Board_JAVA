@@ -25,22 +25,14 @@ public interface IBoardRepository {
 		
 	void updateReadCount(int boardId);
 
-	void updateReplyNumber(@Param("masterId") int masterId, @Param("replyNumber") int replyNumber);
-	void replyArticle(Board boardId);
-	
-	BoardReply insertReply(int boardId, BoardReply reply);
-	void deleteReply(int boardId, BoardReply reply);
-	
 	String getPassword(int boardId);
 	
 	void updateArticle(Board board);
 	void updateFileData(BoardUploadFile file);
 	
 	void deleteFileData(int boardId);
-	void deleteReplyFileData(int boardId);
 	Board selectDeleteArticle(int boardId);
 	void deleteArticleByBoardId(int boardId);
-	void deleteArticleByMasterId(int boardId);
 	
 	int selectTotalArticleCount();
 	int selectTotalArticleCountByCategoryId(int categoryId);

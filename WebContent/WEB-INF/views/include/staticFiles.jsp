@@ -10,6 +10,9 @@
     <title><fmt:message key="TITLE"/></title>
 	
 	<link rel="stylesheet" href="<c:url value='/css/default.css'/>">
+	
+	<!-- Favicon -->
+	<link rel="icon" href="data:;base64,iVBORw0KGgo=">
     
     <!-- Essential styles -->
     <link rel="stylesheet" href="<c:url value='/assets/bootstrap/css/bootstrap.min.css'/>">

@@ -7,7 +7,6 @@
 <%@page contentType="text/html; charset=UTF-8" trimDirectiveWhitespaces="true" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
 <%
 	//자료실 메뉴 생성
 	WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(application);
@@ -50,7 +49,6 @@
                 <li class="dropdown">
                     <a href='<c:url value="/member/login"/>' class="dropdown-toggle" data-toggle="dropdown"><strong><fmt:message key="MEMBER"/></strong></a>
                     <ul class="dropdown-menu">
-                    	<li><a href="<c:url value='/member/login'/>"><fmt:message key="MY_INFO"/></a>
                         <li><a href="<c:url value='/member/update'/>"><fmt:message key="UPDATE_USER_INFO"/></a>
                         <li><a href="<c:url value='/member/delete'/>"><fmt:message key="EXIT_MEMBER"/></a>
                         <li><a href="<c:url value='/member/logout'/>"><fmt:message key="SIGN_OUT"/></a>
