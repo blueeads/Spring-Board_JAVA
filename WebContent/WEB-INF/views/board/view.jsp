@@ -53,10 +53,9 @@
 					<tr>
 						<td><fmt:message key="FILE" /></td>
 						<td>
-							<%--c:if test="${!empty sessionScope.userid}"--%> <c:set
-								var="len" value="${fn:length(board.fileName)}" /> <c:set
-								var="filetype"
-								value="${fn:toUpperCase(fn:substring(board.fileName, len-4, len))}" />
+							<%--c:if test="${!empty sessionScope.userid}"--%> 
+							<c:set var="len" value="${fn:length(board.fileName)}" /> 
+							<c:set var="filetype" value="${fn:toUpperCase(fn:substring(board.fileName, len-4, len))}" />
 							<c:if
 								test="${(filetype eq '.JPG') or (filetype eq 'JPEG') or (filetype eq '.PNG') or (filetype eq '.GIF')}">
 								<img src='<c:url value="/file/${board.fileId}"/>'
@@ -79,8 +78,8 @@
 							</button></a> <a href='<c:url value="/board/update/${board.boardId}"/>'><button
 								type="button" class="btn btn-info">
 								<fmt:message key="UPDATE" />
-							</button></a> <button
-								type="button" class="btn btn-info" id = "boardDelete">
+							</button></a><button
+								type="button" class="btn btn-info" id = "boardDelete" >
 								<fmt:message key="DELETE" />
 							</button></td>
 				</tr>
@@ -100,12 +99,50 @@
 				</div>
 			</form> 
 			<div id="replyList"></div>
+			<div id="paging"></div>
 		</div>
 	</div>
 	<jsp:include page="/WEB-INF/views/include/footer.jsp" />
 	<script type="text/javascript"
 		src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script type="text/javascript">
+	<script type="text/javascript" charset="UTF-8">	
+	var page = 1;
+	function paging() {
+		$.ajax({
+			url: '/homework/reply/paging',
+			dataType: 'html',
+			data: {'bno': ${board.boardId}},
+			type: 'POST',
+			success: function(result) {
+				var htmls = "";
+				for(var i = 1; i <= result; i++) {
+				console.log("페이징 For문 : " + i);
+				
+				if(i==result) {
+					htmls += '<td class="active">';
+				}else {
+					htmls += '<td>';
+				}
+				htmls += '<button type="submit" id=page onclick="getList('+i+'); getCurrentPage('+i+');">';
+				htmls += i;
+				htmls += '</button>';		
+				htmls += '</td>';
+				
+				$("#paging").empty().html(htmls);
+				}
+			},
+			error : function(request, status, error) {                                           
+				console.log("code = " + request.status + " message = "                             
+						+ request.responseText + " error = "                                       
+						+ error); // 실패 시 처리                                                       
+			}
+		});
+	}
+	
+	function getCurrentPage(currentpage) {
+		page = currentpage;
+	}
+	
 		$("#commentInsertBtn").click(function() { //댓글 등록 버튼 클릭시 
 			var insertData = $("#commentInsertForm").serialize(); //commentInsertForm의 내용을 가져옴
 			var userid = '${sessionScope.userid}';
@@ -120,7 +157,6 @@
 						dataType : 'json',
 						data : insertData,
 						success : function(data) {
-							//console.log("성공");
 						},
 							//error : function(request, status, error) {
 							//	console.log("code = " + request.status + " message = "
@@ -130,7 +166,7 @@
 							complete : function() {
 								alert("댓글이 성공적으로 등록되었습니다.");
 								$("#content").val("");
-								getList();
+								getList(page);
 							}
 				});
 				}
@@ -153,21 +189,17 @@
 		
 		function commentUpdateProc(cno){
 			var content = document.getElementById('replycontent'+cno).value;
-			console.log(content);
 			$.ajax({
 					url: '/homework/reply/update',
 					type: 'POST',
 					data : {'cno': cno, 'content' : content, 'bno': ${board.boardId}},
-					dataType : 'text',
+					dataType : 'html',
 					success: function(result) {
 						alert("댓글 수정이 완료되었습니다.");
-						getList();
+						getList(page);
 					},
-					error: function(state, error) {
-						console.log(state + error);
-					},
-					complete: function() {
-						console.log(content);
+					error: function(stauts, error) {
+						console.log("commentUpdateProc : " + stauts + "/" + error);
 					}
 			});
 		}
@@ -179,11 +211,11 @@
 			if(boardwriter.innerHTML == currenwriter) {
 			$.ajax({
 				url : '/homework/reply/delete/'+cno,
-				type : 'html',
+				type : 'POST',
 				data: {'cno': cno, bno: ${board.boardId}},
-				dataType : 'html',
+				dataType : 'text',
 				success : function() {
-					getList();
+					getList(page);
 					alert("성공적으로 댓글을 삭제하였습니다.");
 				}
 			});
@@ -193,9 +225,8 @@
 			}else if(boardwriter != currenwriter){
 				alert("권한이 없습니다.");
 			}
-			console.log(currenwriter);
 		}
-		
+		//추후 리스트함수랑 js파일로 뺄것...
 		function getFormatData(date) {
 			var year = date.getFullYear();
 			var mon = date.getMonth()+1;
@@ -203,21 +234,25 @@
 			return year + "-" + mon + "-" + day;
 		}
 		
-		function getList(){
+		function getList(page){
+			console.log("초기: "+  page);
 			$.ajax({
-				url: '/homework/reply/getboardReply',
+				url: '/homework/reply/getboardReply/${board.boardId}/'+page,
 				type: 'POST',
 				dataType : 'json',
+				contentType:"application/json; Charset=UTF-8",
+				cache : false,
 				data: {
-					'bno': '${board.boardId}'
+					'bno': ${board.boardId},
+					'page' : page
 				},
 				success: function(result) {
 	               	var htmls = "";
+	               	console.log(result);
 				if(result.length < 1){
 					htmls += '<div>등록된 댓글이 없습니다.</div>';
-				} else {			
+				} else {
 		                    htmls += '<table class="table table-bordered" style="margin-top: 15px">';
-		                    htmls += '<tbody id="">';
 		                    htmls += '<tr>';
 		                    htmls +='<td width="4%"><fmt:message key="REPLY_NO" /></td>';
 		                    htmls +='<td width="10%"><fmt:message key="WRITER" /></td>';
@@ -226,7 +261,7 @@
 		                    htmls +='<td width="10%"><fmt:message key="BTN_CLICK" /></td>';
 		                    htmls += '</tr>';
 		                    $(result).each(function(){
-			                  var date = new Date(this.reg_date);
+			                var date = new Date(this.reg_date);
 							var to = getFormatData(date);
 		                    htmls += '<tr style="margin-top: 5px">';
 		                    htmls += '<td width="4%">'+ this.seq +'</td>';
@@ -238,38 +273,38 @@
 		                    htmls += '<input type="hidden" value="'+content+'" id="replycontent">';
 		                    htmls += '<button type="button" id="commentUpdateBtn" name="update" onclick="commentUpdate('+this.cno+');">수정</button>';
 		                    htmls += '<button type="button" id="commentDeleteBtn" name="delete" onclick="commentDelete('+this.cno+');">삭제</button>';
-		                    htmls += '	</td>';
-		                    htmls += '	</tr>';
+		                    htmls += '</td>';
+		                    htmls += '</tr>';
 		                });	//each end
-		                     htmls += '	</tbody>';
-		                     htmls += '	</table>';
+		                     htmls += '</table>';
+						$("#replyList").empty().html(htmls);
 				}
-				$("#replyList").html(htmls);
+				$("#replyList").empty().html(htmls);
 				},
 				error: function(error, state) {
-					console.log(error + state);
-				},
-				complete: function(result) {
-					//console.log(result);
+					console.log("getReplyList : " + error + state);
 				}
-			
 			});
 		}
 		
-		$("#boardDelete").click(function(){
-			$.ajax({
-				url: '/homework/board/delete/',
-				type: 'POST',
-				dataType: 'json',
-				data: { 'boardId': ${board.boardId}},
-				success: function(){
-					console.log("ss");
-				}
-			});
-		});
+		//$("#boardDelete").click(function(){
+		//	$.ajax({
+		//		url: '/homework/board/delete/'+${boardId},
+		//		type: 'POST',
+		//		dataType: 'html',
+		//		data: { 'boardId': ${board.boardId}},
+		//		success: function(){
+		//			location.href="/homework/board/cat/"+${categoryId};
+		//		},
+		//		error: function(stauts, error) {
+		//			console.log("boardDelete : " + stauts + "/" + error);
+		//		}
+		//	});
+		//});
 		
 		$(document).ready(function() {
-			getList();
+			getList(page);
+			paging();
 		});
 	</script>
 </body>

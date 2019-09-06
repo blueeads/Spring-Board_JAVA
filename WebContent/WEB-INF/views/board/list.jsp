@@ -23,44 +23,12 @@
 	        </div>
 	    </div>
     </div>
-	
-	<form action="<c:url value='/board/boardlist'/>" method="post"
-				name="boardListForm" id="boardListForm"
-				enctype="multipart/	form-data" class="form-horizontal">
+    
 	<div class="content">
 		<div id = "boardList"></div>
-	    <table class="table table-hover table-bordered" id="List">
-		<thead>
-		<tr>
-			<!-- td class="pc"><fmt:message key="NO"/></td-->
-			<td><fmt:message key="BOARD_ID"/></td>
-			<td class="pc"><fmt:message key="WRITER"/></td>
-			<td><fmt:message key="SUBJECT"/></td>
-			<td class="pc"><fmt:message key="WRITE_DATE"/></td>
-			<td class="pc"><fmt:message key="READ_COUNT"/></td>
-		</tr>
-		</thead>
-		<c:set var="seq" value="${(page-1)*10}" scope="page" />
-		<c:forEach var="board" items="${boardList}">
-		<tr>
-			<c:set var="seq" value="${seq + 1}" scope="page"/>
-			<!-- td class="pc">${seq}</td-->
-			<td>${board.boardId}</td>
-			<td class="pc">${board.writer}</td>
-			<td>
-			<a href='<c:url value="/board/${board.boardId}"/>'>${board.title}</a>
-			</td>
-			<td class="pc"><fmt:formatDate value="${board.writeDate}" pattern="YYYY-MM-dd"/></td>
-			<td class="pc">${board.readCount}</td>
-		</tr>
-		</c:forEach>
-		</table>
-		
 		<table class="table">
 		<tr>
 			<td align="left" id="nextpage">
-			<!-- 여기다가 추가 -->
-				<jk:paging categoryId="${categoryId}" totalPageCount="${totalPageCount}" nowPage="${page}"/>
 			</td>
 			<td align="right">
 				<input type=hidden id="nextpage">
@@ -69,13 +37,44 @@
 		</tr>
 		</table>
 	</div>
-	</form>
 </div>
 <jsp:include page="/WEB-INF/views/include/footer.jsp"/>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
 	function paging() {
-		
+		$.ajax({
+			url: '/homework/board/paging',
+			dataType: 'html',
+			data: {'categoryId': ${categoryId}},
+			type: 'POST',
+			success: function(result) {
+				var htmls = "";
+				console.log(result);
+				for(var i = 1; i <= result; i++) {
+				console.log(i);
+				
+				if(i==result) {
+					htmls += '<td class="active">';
+				}else {
+					htmls += '<td>';
+				}
+				htmls += '<button type="submit" id="page" class="btn btn-info" onclick="List('+i+');">';
+				htmls += i;
+				htmls += '</button>';		
+				htmls += '</td>';
+				
+				$("#nextpage").empty().html(htmls);
+				}
+			},
+			error : function(request, status, error) {                                           
+				console.log("code = " + request.status + " message = "                             
+						+ request.responseText + " error = "                                       
+						+ error); // 실패 시 처리                                                       
+			},                                                                                   
+			complete: function(){
+				console.log("complete");	
+			}
+		});
 	}
 
 	function getFormatData(date) {
@@ -85,42 +84,54 @@
 		return year + "-" + mon + "-" + day;
 	}
 	
-	function List() {
-		var categoryId = 1;
-		var page = 1; //페이지 변수를 1로 초기화
-		var Paramdata = { 'categoryId' : ${categoryId}, 'page' : page };
+	function List(page) {
+		var Paramdata = { 'categoryId' : ${categoryId}, 'page' : page};
 		$.ajax({
-					url : '/homework/board/boardlist',
+					url : '/homework/board/boardlist/${categoryId}/'+page,
 					type : 'POST',
 					dataType : "json",
+					contentType:"application/json",
+					cache : false,
 					data : Paramdata,
 					success : function(result) {
 						$("#boardList").val("");
-						var htmls = "";
+						var htmls = "";	
+						htmls += '<table class="table table-hover table-bordered">';
+						htmls += '<thead>';
+						htmls += '<tr>';
+						htmls += '<!-- td class="pc"><fmt:message key="NO"/></td-->';
+						htmls += '<td><fmt:message key="BOARD_ID"/></td>';
+						htmls += '<td class="pc"><fmt:message key="WRITER"/></td>';
+						htmls += '<td><fmt:message key="SUBJECT"/></td>';
+						htmls += '<td class="pc"><fmt:message key="WRITE_DATE"/></td>';
+						htmls += '<td class="pc"><fmt:message key="READ_COUNT"/></td>';
+						htmls += '</tr>';
+						htmls += '</thead>';
 						$(result).each(function(){
 						var date = new Date(this.writeDate);
 						var to = getFormatData(date);
-						
 						htmls += '<tr>';
-						htmls += '<td>'+this.boardId+'</td>';
+						htmls += '<td class="pc">'+this.boardId+'</td>';
 						htmls += '<td class="pc">'+this.writer+'</td>';
-						htmls += '<td>'+this.title+'</td>';
+						htmls += '<td>'
+						htmls += '<a href="<c:url value="/board/'+this.boardId+'"/>">'+this.title+'</a>';
+						htmls += '</td>'
 						htmls += '<td>'+to+'</td>';
 						htmls += '<td>'+this.readCount+'</td>';
-						htmls += '</tr>'
-						
-						
+						htmls += '</tr>';
+						});
+						htmls += '</table>';
 						$("#boardList").html(htmls);
-						}
-						)
+
 					},
-					complete : function(List) {
-						console.log(List);
+					error: function(stauts, error) {
+						console.log(stauts + error);
 					}
 				});
 	}
 	$(document).ready(function() {
-		List();
+		List(1);
+		paging();
 	})
 </script>
 </body>

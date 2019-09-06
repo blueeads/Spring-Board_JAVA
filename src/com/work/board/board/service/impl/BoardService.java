@@ -45,8 +45,8 @@ public class BoardService implements IBoardService {
 
 	@Override
 	public List<Board> selectArticleListByCategory(int categoryId, int page) {
-		int start = (page-1) * 10;
-		return boardRepository.selectArticleListByCategory(categoryId, start, start+10);
+		int start = (page-1) * 10 ;
+		return boardRepository.selectArticleListByCategory(categoryId, start, start+11);
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class BoardService implements IBoardService {
 	@Override
 	public List<Board> searchListByContentKeyword(String keyword, int page) {
 		int start = (page-1) * 10;
-		return boardRepository.searchListByContentKeyword("%"+keyword+"%", start, start+10);
+		return boardRepository.searchListByContentKeyword("%"+keyword+"%", start, start+11);
 	}
 
 	@Override

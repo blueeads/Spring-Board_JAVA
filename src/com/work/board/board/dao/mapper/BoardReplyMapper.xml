@@ -4,11 +4,10 @@
 
 <mapper namespace="com.work.board.board.dao.IBoardReplyRepository">
     
-    <select id="ReCount" parameterType="int">
-    	SELECT
-    	COUNT(*)
-    	FROM REPLY
-    	WHERE REPLY_BOARD_NUM=#{bno}
+    <select id="ReCount" parameterType="int" resultType="int">
+    		SELECT 
+		COUNT(*) FROM REPLY 
+		WHERE REPLY_BOARD_NUM=#{bno}	
     </select>
     
     <select id="commentList" parameterType="map" resultType="com.work.board.board.model.BoardReply">

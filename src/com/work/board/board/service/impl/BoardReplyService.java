@@ -23,9 +23,9 @@ public class BoardReplyService implements IBoardReplyService{
 	}
 	
 	@Override
-	public List<BoardReply> commentList(int bno) {
-		//int start = (page-1) * 10;
-		List<BoardReply> reply = boardReplyRepository.commentList(bno, 1, 100);
+	public List<BoardReply> commentList(int bno, int page) {
+		int start = (page-1) * 6;
+		List<BoardReply> reply = boardReplyRepository.commentList(bno, start, start+5);
 		System.out.println(reply);
 		return reply;
 	}
@@ -38,13 +38,11 @@ public class BoardReplyService implements IBoardReplyService{
 	
 	@Override
 	public int ReplyUpdateService(BoardReply reply){
-		System.out.println("댓글 수정");
 		return boardReplyRepository.commentUpdate(reply);
 	}
 	
 	@Override
 	public int ReplyDeleteService(int cno){
-		System.out.println("댓글 삭제");
 		return boardReplyRepository.commentDelete(cno);
 	}
 

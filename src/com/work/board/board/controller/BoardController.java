@@ -1,19 +1,12 @@
 package com.work.board.board.controller;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.json.JSONArray;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -76,14 +67,30 @@ public class BoardController {
 		return "board/list";                                                                                                     
 	}                                                                                                                       
 	
+	@RequestMapping (value="/board/paging", method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	//List                            
+	public int getListByPage(@RequestParam("categoryId") int categoryId, HttpSession session, Model model) {                                                                                 
+		model.addAttribute("categoryId", categoryId);                                                                            
+	                                                                                                                             
+		int bbsCount = boardService.selectTotalArticleCountByCategoryId(categoryId);    
+		int totalPage = 0; 
+		if(bbsCount > 0) {
+			totalPage= (int)Math.ceil(bbsCount/10.0);  
+		}
+		
+		model.addAttribute("totalPageCount", totalPage);                                                                                                                                                              
+		return totalPage;                                                                                                     
+	}     
+	
 	@RequestMapping("/board/cat/{categoryId}")
 	public String getListByCategory(@PathVariable int categoryId, HttpSession session, Model model) {
 		return getListByCategory(categoryId, 1, session, model);
 	}
 	
-	@RequestMapping(value="/board/boardlist", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value="/board/boardlist/{categoryId}/{page}", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public String getList(@RequestParam(value="categoryId") int categoryId, @RequestParam(value="page") int page){
+	public String getList(@PathVariable int categoryId, @PathVariable int page){
 		List<Board> List = boardService.selectArticleListByCategory(categoryId, page);
 		
 		String str = "";
@@ -123,33 +130,64 @@ public class BoardController {
 		return "board/write";
 	}
 	
-	@RequestMapping(value="/board/write", method=RequestMethod.POST)
-	public String writeArticle(Board board, BindingResult result, RedirectAttributes redirectAttrs) {
-		logger.info("/board/write : " + board.toString());
-
-		try{
-			board.setTitle(Jsoup.clean(board.getTitle(), Whitelist.basic()));
-			board.setContent(Jsoup.clean(board.getContent(), Whitelist.basic()));
-			MultipartFile mfile = board.getFile();
-			if(mfile!=null && !mfile.isEmpty()) {
-				logger.info("/board/write : " + mfile.getOriginalFilename());
-				BoardUploadFile file = new BoardUploadFile();
-				file.setFileName(mfile.getOriginalFilename());
-				file.setFileSize(mfile.getSize());
-				file.setFileContentType(mfile.getContentType());
-				file.setFileData(mfile.getBytes());
-				logger.info("/board/write : " + file.toString());
-
-				boardService.insertArticle(board, file);
-			}else {
-				boardService.insertArticle(board);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			redirectAttrs.addFlashAttribute("message", e.getMessage());
-		}
-		return "redirect:/board/cat/"+board.getCategoryId();
-	}
+	//@RequestMapping(value="/board/write", method=RequestMethod.POST)
+	//public String writeArticle(Board board, BindingResult result, RedirectAttributes redirectAttrs) {
+	//	List<BoardUploadFile> list;
+	//	logger.info("/board/write : " + board.toString());
+	//	try{
+	//		board.setTitle(Jsoup.clean(board.getTitle(), Whitelist.basic()));
+	//		board.setContent(Jsoup.clean(board.getContent(), Whitelist.basic()));
+	//		MultipartFile mfile= board.getFile();
+	//		if(mfile!=null && !mfile.isEmpty()) {
+	//			logger.info("/board/write : " + mfile.getOriginalFilename());
+	//			BoardUploadFile file = new BoardUploadFile();
+	//			file.setFileName(mfile.getOriginalFilename());
+	//			file.setFileSize(mfile.getSize());
+	//			file.setFileContentType(mfile.getContentType());
+	//			file.setFileData(mfile.getBytes());
+	//			logger.info("/board/write : " + file.toString());
+    //
+	//			boardService.insertArticle(board, file);
+	//		}else {
+	//			boardService.insertArticle(board);
+	//		}
+	//	}catch(Exception e){
+	//		e.printStackTrace();
+	//		redirectAttrs.addFlashAttribute("message", e.getMessage());
+	//	}
+	//	return "redirect:/board/cat/"+board.getCategoryId();
+	//}
+	
+	@RequestMapping(value="/board/write", method=RequestMethod.POST)                                                                   
+	public String writeArticle(Board board, BindingResult result, RedirectAttributes redirectAttrs) {                                  
+		List<BoardUploadFile> list;                                                                                                      
+		logger.info("/board/write : " + board.toString());                                                                               
+		try{                                                                                                                             
+			board.setTitle(Jsoup.clean(board.getTitle(), Whitelist.basic()));                                                            
+			board.setContent(Jsoup.clean(board.getContent(), Whitelist.basic()));                                                        
+			MultipartFile mfile= board.getFile(); 
+			if(mfile == null) {
+				boardService.insertArticle(board);        
+			} else {
+			while(!mfile.isEmpty()) {                                                                                        
+				logger.info("/board/write : " + mfile.getOriginalFilename());                                                            
+				BoardUploadFile file = new BoardUploadFile();                                                                            
+				file.setFileName(mfile.getOriginalFilename());                                                                           
+				file.setFileSize(mfile.getSize());                                                                                       
+				file.setFileContentType(mfile.getContentType());                                                                         
+				file.setFileData(mfile.getBytes());                                                                                      
+				logger.info("/board/write : " + file.toString());                                                                        
+	                                                                                                                                   
+				boardService.insertArticle(board, file);                                                                                 
+			}                                                                                                                
+				                                                                               
+			}                                                                                                                            
+		}catch(Exception e){                                                                                                             
+			e.printStackTrace();                                                                                                         
+			redirectAttrs.addFlashAttribute("message", e.getMessage());                                                                  
+		}                                                                                                                                
+		return "redirect:/board/cat/"+board.getCategoryId();                                                                             
+	}                                                                                                                                  
 
 	@RequestMapping("/file/{fileId}")
 	public ResponseEntity<byte[]> getFile(@PathVariable int fileId) {
@@ -163,10 +201,27 @@ public class BoardController {
 		return new ResponseEntity<byte[]>(file.getFileData(), headers, HttpStatus.OK);
 	}                                
 	
-	 @RequestMapping(value="/reply/getboardReply", method = {RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping (value="/reply/paging", method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	//Reply List Paging            
+	public int getReplyByPage(@RequestParam("bno") int bno, HttpSession session, Model model) {                                                                                                                                                             
+	                                                                                                                             
+		int bbsCount = replyService.ReCount(bno);    
+		System.out.println(bbsCount);
+		int totalPage = 0; 
+		if(bbsCount > 0) {
+			totalPage= (int)Math.ceil(bbsCount/5.0);  
+		}
+		
+		model.addAttribute("totalPageCount", totalPage);                                                                                                                                                              
+		return totalPage;                                                                                                     
+	}     
+	
+	 @RequestMapping(value="/reply/getboardReply/{bno}/{page}", method = {RequestMethod.GET,RequestMethod.POST})
 	 @ResponseBody
-	 public String getcommentList(@RequestParam("bno") int bno, HttpServletRequest request) throws Exception{
-		List<BoardReply> List = replyService.commentList(bno);
+	 public String getcommentList(@PathVariable int bno, @PathVariable int page, HttpServletRequest request) throws Exception{
+		List<BoardReply> List = replyService.commentList(bno, page);
+	
 		
 		String str = "";
 		ObjectMapper mapper = new ObjectMapper();
@@ -250,7 +305,7 @@ public class BoardController {
 		return "redirect:/board/"+board.getBoardId();
 	}
 
-	@RequestMapping(value="/board/delete/{boardId}", method=RequestMethod.GET)
+	@RequestMapping(value="/board/delete/", method=RequestMethod.GET)
 	public String deleteArticle(@PathVariable int boardId, Model model) {
 		Board board = boardService.selectDeleteArticle(boardId);
 		System.out.println("SBoard : " + board);
@@ -277,28 +332,11 @@ public class BoardController {
 	//	}
 	//}
 	
-	@RequestMapping(value="/board/delete", method= {RequestMethod.POST, RequestMethod.GET})
+	@RequestMapping(value="/board/delete/{boardId}", method={RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody
-	public String deleteArticle(@RequestParam("boardId") int boardId, BindingResult result, HttpSession session, Model model) {                                      
-		try {                                   
-			Board board = boardService.selectArticle(boardId);
-			if(session.getAttribute("userid") == board.getWriter()) {
-				System.out.println("SSSSSSS");
-				boardService.deleteArticle(board.getBoardId());                                                                               
-				return "redirect:/board/cat/"+board.getCategoryId()+"/"+(Integer)session.getAttribute("page");                                
-			} else {                                                                                                                          
-				model.addAttribute("message", "Error");
-				System.out.println("Error");
-				return "error/runtime";                                                                                                       
-			}                                                                                                                                 
-		}catch(Exception e){                                                                                                                  
-			model.addAttribute("message", e.getMessage());
-			System.out.println("Catch");
-			e.printStackTrace();                                                                                                              
-			return "error/runtime";                                                                                                           
-		}                                                                                                                                     
-	}                                                                                                                                       
-	
+	public void deleteArticle(@PathVariable int boardId, HttpServletRequest request) { 
+		System.out.println("삭제 ing");
+	}
 	@RequestMapping("/board/search/{page}")                                                                                                          
 	public String search(@RequestParam("keyword")String keyword, @PathVariable int page, HttpSession session, Model model) {  
 		System.out.println(keyword);

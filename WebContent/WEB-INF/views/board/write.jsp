@@ -68,13 +68,13 @@
     <div class="form-group">
       <label class="control-label col-sm-2" for="photo"><fmt:message key="FILE"/></label>
       <div class="col-sm-8">
-        <input type="file" id="i_file" name="file"><span id="droparea" class="help-block"><fmt:message key="FILESIZE_ERROR"/></span>
+        <input multiple="multiple" type="file" id="i_file" name="file"><span id="droparea" class="help-block"><fmt:message key="FILESIZE_ERROR"/></span>
       </div>
     </div>
     <div class="form-group">
     	<div class="col-sm-offset-2 col-sm-8">
 			<input type="hidden" name="boardId" value="${board.boardId}">
-			<input type="submit" id="i_submit" class="btn btn-info" value="<fmt:message key="SAVE"/>"> <input type="reset" class="btn btn-info" value="<fmt:message key="CANCEL"/>">
+			<input type="submit" id="i_submit" class="btn btn-info" value="<fmt:message key="SAVE"/>"> <input type="reset" class="btn btn-info" value="<fmt:message key="REWRITE"/>">
 		</div>
 	</div>
 	</form>
@@ -82,4 +82,25 @@
 </div>
 <jsp:include page="/WEB-INF/views/include/footer.jsp"/>
 </body>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+	$("#i_submit").click(function(){
+		$.ajax({
+			url: 'homework/board/write',
+			async: false,
+			data: {},
+			dataType: 'html',
+			success: function(data) {
+				console.log("success");
+			},
+			error: function(status, error) {
+				console.log(status + "/" + error);
+			},
+			complete: function() {
+				
+			}
+		});
+	});
+	
+</script>
 </html>

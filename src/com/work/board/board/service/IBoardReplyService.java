@@ -7,7 +7,7 @@ import com.work.board.board.model.BoardReply;
 public interface IBoardReplyService {
 	int ReCount(int bno);
 	
-	List<BoardReply> commentList(int bno);
+	List<BoardReply> commentList(int bno, int page);
 	int ReplyInsertService(BoardReply reply);
 	int ReplyUpdateService(BoardReply reply);
 	int ReplyDeleteService(int cno);
