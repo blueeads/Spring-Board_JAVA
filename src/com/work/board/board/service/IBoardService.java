@@ -10,6 +10,7 @@ public interface IBoardService {
 	
 	void insertArticle(Board boardId);
 	void insertArticle(Board boardId, BoardUploadFile file);
+<<<<<<< HEAD
 	void insertFile(int boardId, BoardUploadFile file);
 	
 	List<Board> selectArticleListByCategory(int categoryId, int page);
@@ -27,6 +28,21 @@ public interface IBoardService {
 	Board selectDeleteArticle(int boardId);
 	void deleteArticle(int boardId);
 	void deleteFile(int boardId);
+=======
+	
+	List<Board> selectArticleListByCategory(int categoryId, int page);
+	List<Board> selectArticleListByCategory(int categoryId);
+	
+	Board selectArticle(int boardId);
+	
+	BoardUploadFile getFile(int fileId);
+	
+	void updateArticle(Board board);
+	void updateArticle(Board board, BoardUploadFile file);
+	
+	Board selectDeleteArticle(int boardId);
+	void deleteArticle(int boardId);
+>>>>>>> refs/remotes/origin/master
 	
 	int selectTotalArticleCount();
 	int selectTotalArticleCountByCategoryId(int categoryId);

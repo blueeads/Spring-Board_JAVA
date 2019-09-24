@@ -29,6 +29,7 @@
 			<div class="row">
 				<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
 					<table>
+<<<<<<< HEAD
 					<a href="/homework/board/cat/1" font="30px">게시판1 바로가기</a><br>
 					<a href="/homework/board/cat/2" font="30px">게시판2 바로가기</a><br>
 					<a href="/homework/board/cat/3" font="30px">게시판3 바로가기</a><br>
@@ -47,4 +48,21 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
 </script>
+=======
+					<a href="board/cat/1" font="30px">게시판1 바로가기</a><br>
+					<a href="board/cat/2" font="30px">게시판2 바로가기</a><br>
+					<a href="board/cat/3" font="30px">게시판3 바로가기</a><br>
+					</table>
+					</div>
+			</div>
+	<div class="alert alert-info">
+		<ol>
+			<li text-align="center">Kwon Ohyeon</li>
+		</ol>
+	</div>
+	</div>
+</div>
+<jsp:include page="/WEB-INF/views/include/footer.jsp"/>
+</body>
+>>>>>>> refs/remotes/origin/master
 </html>

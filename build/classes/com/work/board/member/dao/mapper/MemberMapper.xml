@@ -20,6 +20,7 @@
 			name,
 			password,
 			phone,
+<<<<<<< HEAD
 			email,
 			admin
 		FROM 
@@ -31,6 +32,9 @@
 		<select id="idCheck" parameterType="string" resultType="int">
 	<![CDATA[
 		SELECT COUNT(*)
+=======
+			email 
+>>>>>>> refs/remotes/origin/master
 		FROM 
 			member 
 		WHERE userid=#{userid}

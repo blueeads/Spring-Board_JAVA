@@ -18,6 +18,7 @@ public class BoardService implements IBoardService {
 	@Autowired
 	@Qualifier("IBoardRepository")
 	IBoardRepository boardRepository;
+<<<<<<< HEAD
 	
 	@Override
 	public int getBoardListCnt(int categoryId){
@@ -135,6 +136,100 @@ public class BoardService implements IBoardService {
 	public List<Board> searchListByContentKeyword(String keyword, int page) {
 		int start = (page-1) * 11;
 		return boardRepository.searchListByContentKeyword("%"+keyword+"%", start, start+10);
+=======
+
+	@Override
+	public int getBoardListCnt(int categoryId){
+		return boardRepository.getBoardListCnt();
+	}
+	
+	@Transactional
+	public void insertArticle(Board board) {
+		board.setBoardId(boardRepository.selectMaxArticleNo()+1);
+		boardRepository.insertArticle(board);
+	}
+	
+	@Transactional
+	public void insertArticle(Board board, BoardUploadFile file) {
+		//게시판 number +1해서 넣기
+		board.setBoardId(boardRepository.selectMaxArticleNo()+1);
+		boardRepository.insertArticle(board);
+		//파일이 있는지 & 파일 이름이 NULL이 아니면 파일 넣기
+        if(file != null && file.getFileName() != null && !file.getFileName().equals("")) {
+        	file.setBoardId(board.getBoardId());
+        	file.setFileId(boardRepository.selectMaxFileId()+1);
+        	boardRepository.insertFileData(file);
+        }
+	}
+
+	@Override
+	public List<Board> selectArticleListByCategory(int categoryId, int page) {
+		int start = (page-1) * 10 ;
+		return boardRepository.selectArticleListByCategory(categoryId, start, start+11);
+	}
+
+	@Override
+	public List<Board> selectArticleListByCategory(int categoryId) {
+		return boardRepository.selectArticleListByCategory(categoryId, 0, 100);
+	}
+
+	@Transactional
+	public Board selectArticle(int boardId) {
+		boardRepository.updateReadCount(boardId);
+		return boardRepository.selectArticle(boardId);
+	}
+
+	@Override
+	public BoardUploadFile getFile(int fileId) {
+		return boardRepository.getFile(fileId);
+	}
+
+	@Override
+	public void updateArticle(Board board) {
+		boardRepository.updateArticle(board);
+	}
+
+	@Transactional
+	public void updateArticle(Board board, BoardUploadFile file) {
+		boardRepository.updateArticle(board);
+        if(file != null && file.getFileName() != null && !file.getFileName().equals("")) {
+        	file.setBoardId(board.getBoardId());
+//        	System.out.println(file.toString());
+        	if(file.getFileId()>0) {
+        		boardRepository.updateFileData(file);
+        	}else {
+        		boardRepository.insertFileData(file);
+        	}
+        }
+	}
+	
+	@Override
+	public Board selectDeleteArticle(int boardId) {
+		return boardRepository.selectDeleteArticle(boardId);
+	}
+	
+	@Transactional
+	public void deleteArticle(int boardId) {
+		System.out.println("삭제");
+			boardRepository.deleteFileData(boardId);
+			boardRepository.deleteArticleByBoardId(boardId);
+	}
+
+	@Override
+	public int selectTotalArticleCount() {
+		return boardRepository.selectTotalArticleCount();
+	}
+
+	@Override
+	public int selectTotalArticleCountByCategoryId(int categoryId) {
+		return boardRepository.selectTotalArticleCountByCategoryId(categoryId);
+	}
+
+	@Override
+	public List<Board> searchListByContentKeyword(String keyword, int page) {
+		int start = (page-1) * 10;
+		return boardRepository.searchListByContentKeyword("%"+keyword+"%", start, start+11);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	@Override

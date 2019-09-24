@@ -90,6 +90,7 @@
 					url : '/homework/board/boardlist/${categoryId}/'+page,
 					type : 'POST',
 					dataType : "json",
+<<<<<<< HEAD
 					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
 					cache : false,
 					data : Paramdata,
@@ -128,6 +129,41 @@
 							htmls += '</table>';
 						}
 							$("#boardList").html(htmls);
+=======
+					contentType:"application/json",
+					cache : false,
+					data : Paramdata,
+					success : function(result) {
+						$("#boardList").val("");
+						var htmls = "";	
+						htmls += '<table class="table table-hover table-bordered">';
+						htmls += '<thead>';
+						htmls += '<tr>';
+						htmls += '<!-- td class="pc"><fmt:message key="NO"/></td-->';
+						htmls += '<td><fmt:message key="BOARD_ID"/></td>';
+						htmls += '<td class="pc"><fmt:message key="WRITER"/></td>';
+						htmls += '<td><fmt:message key="SUBJECT"/></td>';
+						htmls += '<td class="pc"><fmt:message key="WRITE_DATE"/></td>';
+						htmls += '<td class="pc"><fmt:message key="READ_COUNT"/></td>';
+						htmls += '</tr>';
+						htmls += '</thead>';
+						$(result).each(function(){
+						var date = new Date(this.writeDate);
+						var to = getFormatData(date);
+						htmls += '<tr>';
+						htmls += '<td class="pc">'+this.boardId+'</td>';
+						htmls += '<td class="pc">'+this.writer+'</td>';
+						htmls += '<td>'
+						htmls += '<a href="<c:url value="/board/'+this.boardId+'"/>">'+this.title+'</a>';
+						htmls += '</td>'
+						htmls += '<td>'+to+'</td>';
+						htmls += '<td>'+this.readCount+'</td>';
+						htmls += '</tr>';
+						});
+						htmls += '</table>';
+						$("#boardList").html(htmls);
+
+>>>>>>> refs/remotes/origin/master
 					},
 					error: function(stauts, error) {
 						console.log(stauts + error);

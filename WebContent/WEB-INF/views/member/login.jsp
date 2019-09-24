@@ -26,6 +26,7 @@
 	<form action="<c:url value='/member/login'/>" method="post" class="form-horizontal">
 	<div class="form-group">
       <label class="control-label col-sm-2" for="id"><fmt:message key="MEMBER_ID"/></label>
+<<<<<<< HEAD
       <div class="col-sm-4">
         <input type="text" name="userid" id="userid" value="${member['userid']}" title="<fmt:message key='USERID_TITLE'/>" class="form-control" placeholder="<fmt:message key="MEMBER_ID"/>">
      	<div id="id_check"></div>
@@ -73,6 +74,41 @@ if(!pwJ.test(password)) {
 }
 
 </script>
+=======
+      <div class="col-sm-8">
+        <input type="text" name="userid" id="id" class="form-control" placeholder="<fmt:message key="MEMBER_ID"/>" aria-describedby="basic-addon1">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="pw"><fmt:message key="MEMBER_PW"/></label>
+      <div class="col-sm-8">
+        <input type="password" name="password" id="pw" class="form-control" placeholder="<fmt:message key="MEMBER_PW"/>" aria-describedby="basic-addon1">
+      </div>
+    </div>
+    <div class="form-group">
+    	<div class="col-sm-offset-2 col-sm-8">
+		<input type="submit" class="btn btn-info" value="<fmt:message key="SIGN_IN"/>">
+		<input type="reset" class="btn btn-info" value="<fmt:message key="CANCEL"/>">
+		<a href="<c:url value='/member/insert'/>" class="btn btn-success"><fmt:message key="INSERT_USER_INFO"/></a>
+		</div>
+	</div>
+	</form>
+</c:if>
+<!-- 사인아웃 -->
+<c:if test="${not empty sessionScope.userid}">
+	<h3>ID : ${userid}</h3>
+	<h4>NAME : ${name} </h4>
+	<h4>EMAIL : ${email}</h4>
+
+	<!--홈페이지 사인아웃 -->
+	<a href="<c:url value='/member/update'/>">[<fmt:message key="UPDATE_USER_INFO"/>]</a>
+	<a href="<c:url value='/member/logout'/>">[<fmt:message key="SIGN_OUT"/>]</a>
+	<a href="<c:url value='/member/delete'/>">[<fmt:message key="EXIT_MEMBER"/>]</a>
+</c:if>
+</div>
+</div>
+<jsp:include page="/WEB-INF/views/include/footer.jsp"/>
+>>>>>>> refs/remotes/origin/master
 </body>
 </html>
 

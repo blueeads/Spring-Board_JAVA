@@ -13,6 +13,12 @@
 	    <div class="row">
 	        <div class="col-md-6 pc">
 	            <h2><fmt:message key="BOARD_LIST"/> 
+<<<<<<< HEAD
+=======
+	            <c:if test="${empty name}">
+	            <small style="color:red;"><fmt:message key="LOGIN"/></small>
+	            </c:if>
+>>>>>>> refs/remotes/origin/master
 	            </h2>
 	        </div>
 	        <div class="col-md-6">

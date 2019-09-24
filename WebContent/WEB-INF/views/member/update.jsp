@@ -26,6 +26,7 @@
 	<div class="form-group">
       <label class="control-label col-sm-2" for="userid"><fmt:message key="MEMBER_ID"/></label>
       <div class="col-sm-4">
+<<<<<<< HEAD
         <input type="text" name="userid" id="userid" value="${member['userid']}" ${empty member.userid ? "" : "readonly"} class="form-control" placeholder="<fmt:message key="MEMBER_ID"/>">
       </div>
     </div>
@@ -253,4 +254,50 @@ function historyback() {
 }
 
 </script>
+=======
+        <input type="text" name="userid" id="userid" value="${member['userid']}" ${empty member.userid ? "" : "readonly"} class="form-control" placeholder="<fmt:message key="MEMBER_ID"/>" required>
+      </div>
+    </div>
+	<div class="form-group">
+      <label class="control-label col-sm-2" for="password"><fmt:message key="MEMBER_PW"/></label>
+      <div class="col-sm-4">
+        <input type="password" name="password" id="password" class="form-control" title="<fmt:message key='PASSWORD_TITLE'/>" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="password_re"><fmt:message key="MEMBER_PW_RE"/></label>
+      <div class="col-sm-4">
+        <input type="password" name="password_re" id="password_re" class="form-control" title="<fmt:message key='PASSWORD_RE_TITLE'/>" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" required>
+      </div>
+    </div>
+	<div class="form-group">
+      <label class="control-label col-sm-2" for="name"><fmt:message key="MEMBER_NAME"/></label>
+      <div class="col-sm-4">
+        <input type="text" name="name" id="name" value="${member.name}" class="form-control" required>
+      </div>
+    </div>
+	<div class="form-group">
+      <label class="control-label col-sm-2" for="phone"><fmt:message key="MEMBER_PHONE"/></label>
+      <div class="col-sm-6">
+        <input type="text" name="phone" id="phone" value="${member.phone}" class="form-control" required>
+      </div>
+    </div>
+	<div class="form-group">
+      <label class="control-label col-sm-2" for="email"><fmt:message key="MEMBER_EMAIL"/></label>
+      <div class="col-sm-8">
+        <input type="text" name="email" id="email" value="${member.email}" class="form-control" required>
+      </div>
+    </div>
+    <div class="form-group">
+    	<div class="col-sm-offset-2 col-sm-8">
+		<input type="submit" class="btn btn-info" value="<fmt:message key="SAVE"/>">
+		<input type="reset" class="btn btn-info" value="<fmt:message key="CANCEL"/>">
+		</div>
+	</div>
+	</form>
+	</div>
+</div>
+<jsp:include page="/WEB-INF/views/include/footer.jsp"/>
+</body>
+>>>>>>> refs/remotes/origin/master
 </html>

@@ -38,6 +38,7 @@
 	<div class="form-group">
       <label class="control-label col-sm-2" for="name"><fmt:message key="WRITER"/></label>
       <div class="col-sm-2">
+<<<<<<< HEAD
         <input type="text" name="writer" id="name" value="${sessionScope.userid}" ${!empty sessionScope.userid ? "readonly" : "" } class="form-control">
       </div>
     </div>
@@ -255,6 +256,71 @@ $('#content').keyup(function (e){
     }
 });
 
+=======
+        <input type="text" name="writer" id="name" value="${sessionScope.name}" ${!empty sessionScope.name ? "readonly" : "" } class="form-control">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="email"><fmt:message key="EMAIL"/></label>
+      <div class="col-sm-4">
+        <input type="text" name="email" id="email" value="${sessionScope.email}" ${!empty sessionScope.email ? "readonly" : "" } class="form-control" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="password"><fmt:message key="PASSWORD"/></label>
+      <div class="col-sm-2">
+        <input type="password" name="password" id="password" class="form-control" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="title"><fmt:message key="SUBJECT"/></label>
+      <div class="col-sm-8">
+        <input type="text" name="title" id="title" class="form-control" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="content"><fmt:message key="CONTENT"/></label>
+      <div class="col-sm-8">
+        <textarea name="content" rows="10" cols="100" class="form-control"></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="photo"><fmt:message key="FILE"/></label>
+      <div class="col-sm-8">
+        <input multiple="multiple" type="file" id="i_file" name="file"><span id="droparea" class="help-block"><fmt:message key="FILESIZE_ERROR"/></span>
+      </div>
+    </div>
+    <div class="form-group">
+    	<div class="col-sm-offset-2 col-sm-8">
+			<input type="hidden" name="boardId" value="${board.boardId}">
+			<input type="submit" id="i_submit" class="btn btn-info" value="<fmt:message key="SAVE"/>"> <input type="reset" class="btn btn-info" value="<fmt:message key="REWRITE"/>">
+		</div>
+	</div>
+	</form>
+	</div>
+</div>
+<jsp:include page="/WEB-INF/views/include/footer.jsp"/>
+</body>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+	$("#i_submit").click(function(){
+		$.ajax({
+			url: 'homework/board/write',
+			async: false,
+			data: {},
+			dataType: 'html',
+			success: function(data) {
+				console.log("success");
+			},
+			error: function(status, error) {
+				console.log(status + "/" + error);
+			},
+			complete: function() {
+				
+			}
+		});
+	});
+>>>>>>> refs/remotes/origin/master
 	
 </script>
 </html>

@@ -16,9 +16,16 @@ response.setStatus(200);
 	<div class="jumbotron">
 		<h2 style="color:red;"><fmt:message key="${message}"/></h2>
 		<p>
+<<<<<<< HEAD
 			Failed URL: ${url}
 			Exception:  ${exception.message}
 			<c:forEach items="${exception.stackTrace}" var="stack">    ${stack} 
+=======
+		
+			Failed URL: ${url}
+			Exception:  ${exception.message}
+			<c:forEach items="${exception.stackTrace}" var="ste">    ${ste} 
+>>>>>>> refs/remotes/origin/master
 			</c:forEach>
 		
 		</p>
