@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.work.board.board.dao.IBoardCommentRepository">
+    
+    <select id="ReCount" parameterType="int" resultType="int">
+    		SELECT 
+		COUNT(*) FROM REPLY 
+		WHERE REPLY_BOARD_NUM=#{boardId}	
+    </select>
+    
+    <select id="commentList" parameterType="map" resultType="com.work.board.board.model.BoardComment">
+    <![CDATA[
+		SELECT
+			REPLY_NUM				AS "contentId",              
+			REPLY_BOARD_NUM			AS "boardId",              
+			REPLY_COMMENT			AS "content",          
+			REPLY_WRITER			AS "Writer",           
+			REPLY_REG_DATATIME		AS "reg_date",         
+			RNUM					AS "seq"               
+		FROM (
+			SELECT
+			REPLY_NUM,
+			REPLY_BOARD_NUM,
+			REPLY_COMMENT,
+			REPLY_WRITER,
+			REPLY_REG_DATATIME,
+			ROWNUM AS RNUM
+		FROM (
+		SELECT * FROM REPLY
+		WHERE REPLY_BOARD_NUM=#{boardId}
+		ORDER BY REPLY_NUM ASC
+			)
+		)
+		WHERE RNUM BETWEEN #{start} AND #{end}
+		]]>
+    </select>
+    
+    	<select id="selectMaxcommentNo" parameterType="int" resultType="int">
+	<![CDATA[
+		SELECT 
+			NVL(MAX(REPLY_NUM),0) AS "commentNo"
+		FROM REPLY
+	]]>
+	</select>
+    
+    <insert id="commentInsert" parameterType="com.work.board.board.model.BoardComment">
+        INSERT INTO
+        REPLY 
+        (REPLY_NUM, REPLY_BOARD_NUM, REPLY_COMMENT, REPLY_WRITER, REPLY_REG_DATATIME)
+        VALUES
+        (#{contentId},#{boardId},#{content},#{writer},SYSDATE)
+    </insert>
+    
+    <update id="commentUpdate" parameterType="com.work.board.board.model.BoardComment">
+        UPDATE REPLY
+            SET
+            REPLY_COMMENT = #{content}
+        WHERE REPLY_NUM = #{contentId}
+    </update>
+    
+    <delete id="commentDelete" parameterType="int">
+        DELETE FROM REPLY WHERE REPLY_NUM = #{contentId}
+    </delete>
+	
+</mapper>
