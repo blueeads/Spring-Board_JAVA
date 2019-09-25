@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.work.board.board.dao.IBoardCategoryRepository">
+
+	<select id="selectAllCategory" resultType="com.work.board.board.model.BoardCategory">
+	<![CDATA[
+		SELECT 
+			CATEGORY_ID				AS categoryId, 
+			CATEGORY_CLASS1			AS categoryClass1, 
+			CATEGORY_NAME			AS categoryName,
+			CATEGORY_ORDER			AS categoryOrder 
+		FROM BOARD_CATEGORY
+		ORDER BY CATEGORY_ORDER
+	]]>
+	</select>
+	
+	<select id="selectAllCategoryByClass1" parameterType="int" resultType="com.work.board.board.model.BoardCategory">
+	<![CDATA[
+		SELECT 
+			CATEGORY_ID				AS categoryId, 
+			CATEGORY_NAME			AS categoryName,
+			CATEGORY_CLASS1			AS categoryClass1,
+			CATEGORY_ORDER			AS categoryOrder 
+		FROM BOARD_CATEGORY
+		WHERE CATEGORY_CLASS1=#{class1}
+		ORDER BY CATEGORY_ORDER
+	]]>
+	</select>
+
+	<select id="selectMaxFileId" parameterType="int" resultType="int">
+	<![CDATA[
+		SELECT 
+			NVL(MAX(CATEGORY_ID),0) AS "categoryId"
+		FROM BOARD_CATEGORY
+	]]>
+	</select>
+
+</mapper>
