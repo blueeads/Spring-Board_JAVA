@@ -96,7 +96,7 @@
 					success : function(result) {
 						$("#boardList").val("");
 						var htmls = "";	
-						if(page == 0) {
+						if(result == 0) {
 							htmls += '<div>등록된 게시글이 없습니다.</div>';
 						}else {
 							htmls += '<table class="table table-hover table-bordered">';

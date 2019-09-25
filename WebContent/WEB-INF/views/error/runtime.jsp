@@ -22,10 +22,17 @@ response.setStatus(200);
 			</c:forEach>
 		
 		</p>
-		<p><a class="btn btn-primary btn-lg" href='<c:url value="/"/>' role="button"><fmt:message key="HOME"/></a></p>
+		<p><a class="btn btn-primary btn-lg" href='<c:url value="/"/>' role="button" onclick='location.href="historyback()"'><fmt:message key="HOME"/></a></p>
 	</div>
 </div>
 </div>
 <jsp:include page="/WEB-INF/views/include/footer.jsp"/>
+<script type="text/javascript">
+//취소 버튼 클릭 시 이전 페이지로 이동
+function historyback() {
+	history.back();
+	//history.go(-1);
+}
+</script>
 </body>
 </html>

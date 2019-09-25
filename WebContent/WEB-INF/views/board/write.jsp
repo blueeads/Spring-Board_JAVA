@@ -217,7 +217,7 @@
 //            }
 //        });
 //}
-////입력값 체크 함수
+
 //
 //function CheckFile(file) {
 //	var str = file.value;
@@ -231,6 +231,8 @@
 //	})
 //}
 //
+
+/*		입력값 체크 함수		*/
 //제목 글자 수 값
 $('#title').keyup(function (e){
     var content = $(this).val();
