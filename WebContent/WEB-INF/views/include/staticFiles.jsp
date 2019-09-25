@@ -17,6 +17,7 @@
     <!-- Essential styles -->
     <link rel="stylesheet" href="<c:url value='/assets/bootstrap/css/bootstrap.min.css'/>">
     <link rel="stylesheet" href="<c:url value='/font-awesome/css/font-awesome.min.css'/>"> 
+<<<<<<< HEAD
     <link rel="stylesheet" href="<c:url value='/css/jquery.fancybox.css?v=2.1.5" media="screen'/>"> 
 
     <!-- Boomerang styles -->
@@ -29,6 +30,35 @@
 	<!-- Essentials -->
 
 	<script async src="<c:url value='/js/jquery.MultiFile.js'/>"></script> 
+=======
+<<<<<<< HEAD
+    <link rel="stylesheet" href="<c:url value='/css/jquery.fancybox.css?v=2.1.5" media="screen'/>"> 
+
+    <!-- Boomerang styles -->
+    <link id="wpStylesheet" rel="stylesheet" type="text/css" href="<c:url value='/css/global-style.css'/>" media="screen">  
+    <link rel="stylesheet" type="text/css" href="<c:url value='/css/side-menu.css'/>" media="screen">  
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="<c:url value='/js/jquery-ui.min.js'/>"></script>
+
+	<!-- Essentials -->
+
+	<script async src="<c:url value='/js/jquery.MultiFile.js'/>"></script> 
+=======
+    <link rel="stylesheet" href="<c:url value='/assets/fancybox/jquery.fancybox.css?v=2.1.5" media="screen'/>"> 
+
+    <!-- Boomerang styles -->
+    <link id="wpStylesheet" rel="stylesheet" type="text/css" href="<c:url value='/css/global-style.css'/>" media="screen">  
+
+    <!-- Boomerang styles -->
+    <link rel="stylesheet" type="text/css" href="<c:url value='/css/side-menu.css'/>" media="screen">  
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="<c:url value='/js/jquery-ui.min.js'/>"></script>
+
+	<!-- Essentials -->
+>>>>>>> refs/remotes/origin/master
+>>>>>>> refs/remotes/origin/master
 	<script async src="<c:url value='/assets/bootstrap/js/bootstrap.min.js'/>"></script>
 	<script async src="<c:url value='/js/jquery.hoverup.js'/>"></script>
 	<script async src="<c:url value='/js/jquery.hoverdir.js'/>"></script>

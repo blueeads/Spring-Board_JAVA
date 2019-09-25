@@ -11,6 +11,7 @@ public interface IBoardReplyRepository {
 	
     int commentCount();
  
+<<<<<<< HEAD
     List<BoardReply> commentList(@Param("boardId") int boardId, @Param("start") int start, @Param("end") int end);
  
     int commentInsert(BoardReply comment);
@@ -20,5 +21,16 @@ public interface IBoardReplyRepository {
     int commentDelete(int commentId);
     
 	int ReCount(int boardId);
+=======
+    List<BoardReply> commentList(@Param("bno") int bno, @Param("start") int start, @Param("end") int end);
+ 
+    int commentInsert(BoardReply comment);
+    
+    int commentUpdate(BoardReply comment);
+ 
+    int commentDelete(int cno);
+    
+	int ReCount(int bno);
+>>>>>>> refs/remotes/origin/master
 
 }

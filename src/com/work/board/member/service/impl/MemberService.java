@@ -21,6 +21,7 @@ public class MemberService implements IMemberService {
 	}
 
 	@Override
+<<<<<<< HEAD
 	public int idCheck(String userid) {
 		return memberDao.idCheck(userid);
 	}
@@ -39,6 +40,41 @@ public class MemberService implements IMemberService {
 	public void updateMember(Member member) {
 		memberDao.updateMember(member);
 //		memberDao.updateBoardName(member.getName());
+=======
+<<<<<<< HEAD
+	public int idCheck(String userid) {
+		return memberDao.idCheck(userid);
+	}
+	
+	@Override
+	public Member selectMember(String userid) {
+		return memberDao.selectMember(userid);
+	}
+
+	@Override
+	public List<Member> selectAllMembers() {
+		return memberDao.selectAllMembers();
+	}
+
+	@Override
+	public void updateMember(Member member) {
+		memberDao.updateMember(member);
+//		memberDao.updateBoardName(member.getName());
+=======
+	public Member selectMember(String userid) {
+		return memberDao.selectMember(userid);
+	}
+
+	@Override
+	public List<Member> selectAllMembers() {
+		return memberDao.selectAllMembers();
+	}
+
+	@Override
+	public void updateMember(Member member) {
+		memberDao.updateMember(member);
+>>>>>>> refs/remotes/origin/master
+>>>>>>> refs/remotes/origin/master
 	}
 
 	@Override

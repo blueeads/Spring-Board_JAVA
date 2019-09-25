@@ -22,11 +22,27 @@
         </div>
     </div>
 	<div class="content">
+<<<<<<< HEAD
 	<form action="<c:url value='/member/delete'/>" method="post" class="form-horizontal">
 	<div class="form-group">
       <label class="control-label col-sm-2" for="password"><fmt:message key="MEMBER_PW"/></label>
       <div class="col-sm-4">
         <input type="password" name="password" id="password" class="form-control"><h5 style="color:gray;"><fmt:message key="${message}"/></h5>
+=======
+<<<<<<< HEAD
+	<form action="<c:url value='/member/delete'/>" method="post" class="form-horizontal">
+	<div class="form-group">
+      <label class="control-label col-sm-2" for="password"><fmt:message key="MEMBER_PW"/></label>
+      <div class="col-sm-4">
+        <input type="password" name="password" id="password" class="form-control"><h5 style="color:gray;"><fmt:message key="${message}"/></h5>
+=======
+	<form action="<c:url value='/member/delete.do'/>" method="post" class="form-horizontal">
+	<div class="form-group">
+      <label class="control-label col-sm-2" for="password"><fmt:message key="MEMBER_PW"/></label>
+      <div class="col-sm-4">
+        <input type="password" name="password" id="password" class="form-control"><h4 style="color:red;"><fmt:message key="${message}"/></h4>
+>>>>>>> refs/remotes/origin/master
+>>>>>>> refs/remotes/origin/master
       </div>
     </div>
     <div class="form-group">

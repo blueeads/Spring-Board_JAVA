@@ -71,6 +71,7 @@ input:invalid {
 	text-align: right !important;
 }
 
+<<<<<<< HEAD
 #commentUpdateBtn {
 	margin-right : 15px;
 }
@@ -78,4 +79,48 @@ input:invalid {
 .userindex {
 	padding-top : 30%;
 	font-size : 15px;
+=======
+<<<<<<< HEAD
+#commentUpdateBtn {
+	margin-right : 15px;
+}
+
+.userindex {
+	padding-top : 30%;
+	font-size : 15px;
+=======
+@import url(http://fonts.googleapis.com/earlyaccess/jejugothic.css);
+audio, video {
+    -moz-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    
+    -o-transition: all 1s ease;
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+    vertical-align: top;
+}
+
+.setup {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    font-size: 102%;
+    height: 47px;
+    position: absolute;
+}
+p { padding: 1em; }
+li {
+    border-bottom: 1px solid rgb(189, 189, 189);
+    border-left: 1px solid rgb(189, 189, 189);
+    padding: .5em;
+}
+
+.startconference{
+	width: 400px;
+	border-radius : 8px;
+	background: #2a2b25;
+	color : white;
+	font-family: 'Jeju Gothic', serif;
+	margin : 02.em;
+>>>>>>> refs/remotes/origin/master
+>>>>>>> refs/remotes/origin/master
 }

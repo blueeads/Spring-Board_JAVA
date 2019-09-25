@@ -1,10 +1,17 @@
 package com.work.board.board.model;
 
 public class BoardCategory {
+<<<<<<< HEAD
 	private int categoryId; //카테고리 넘버
 	private int categoryClass1;
 	private int categoryClass2;
 	private String categoryName; //카테고리 이름
+=======
+	private int categoryId;
+	private int categoryClass1;
+	private int categoryClass2;
+	private String categoryName;
+>>>>>>> refs/remotes/origin/master
 	private String categoryDescription;
 	private int categoryOrder;
 	

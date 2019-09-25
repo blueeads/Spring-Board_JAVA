@@ -18,6 +18,7 @@ public class BoardReplyService implements IBoardReplyService{
 	IBoardReplyRepository boardReplyRepository;
 	
 	@Override
+<<<<<<< HEAD
 	public int ReCount(int boardId) {
 		return boardReplyRepository.ReCount(boardId);
 	}
@@ -44,6 +45,34 @@ public class BoardReplyService implements IBoardReplyService{
 	@Override
 	public int ReplyDeleteService(int commentId){
 		return boardReplyRepository.commentDelete(commentId);
+=======
+	public int ReCount(int bno) {
+		return boardReplyRepository.ReCount(bno);
+	}
+	
+	@Override
+	public List<BoardReply> commentList(int bno, int page) {
+		int start = (page-1) * 6;
+		List<BoardReply> reply = boardReplyRepository.commentList(bno, start, start+5);
+		System.out.println(reply);
+		return reply;
+	}
+	
+	@Override
+	public int ReplyInsertService(BoardReply reply){
+		reply.setCno(boardReplyRepository.selectMaxReplyNo()+1);
+		return boardReplyRepository.commentInsert(reply);
+	}
+	
+	@Override
+	public int ReplyUpdateService(BoardReply reply){
+		return boardReplyRepository.commentUpdate(reply);
+	}
+	
+	@Override
+	public int ReplyDeleteService(int cno){
+		return boardReplyRepository.commentDelete(cno);
+>>>>>>> refs/remotes/origin/master
 	}
 
 }
